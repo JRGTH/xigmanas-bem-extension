@@ -124,6 +124,7 @@ ext_initial_download()
 		chmod +x ${CWDIR}/update/${SCRIPTNAME}
 		cp -rf ${CWDIR}/update/* ${CWDIR}/
 		rm -r ${CWDIR}/update
+		rm -f ${CWDIR}/master.zip
 		echo "Done!"
 	fi
 }
@@ -338,7 +339,7 @@ ext_enable_disable()
 pkg_upgrade()
 {
 	# Re-fetch beadm package and extract.
-	echo "Preparing to overwrite current beadm files, configuration will be preserved..."
+	echo "Preparing to overwrite current beadm files..."
 	beadm_update_download
 
 	# Check for extension updates.
