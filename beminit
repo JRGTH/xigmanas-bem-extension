@@ -47,6 +47,7 @@ APPNAME="bem"
 BEADM="beadm"
 EXTLOGFILE="${CWDIR}/log/bem_ext.log"
 FULLAPPNAME="BE Manager"
+LONGAPPNAME="Boot Environments Manager"
 USRLOCAL="/usr/local"
 BEADMPATH="${USRLOCAL}/sbin"
 BEADMAPP="${BEADMPATH}/${BEADM}"
@@ -225,7 +226,7 @@ require_once("config.inc");
 require_once("functions.inc");
 \$cmd = dirname(__FILE__)."/${SCRIPTNAME}";
 \$name = "${FULLAPPNAME} Extension";
-\$comment = "Start ${FULLAPPNAME}";
+\$comment = "Start ${LONGAPPNAME}";
 \$rc = &array_make_branch(\$config,'rc','param'); 
 if(false === array_search_ex(\$name,\$rc,'name')):
 	\$rc_param = [];
