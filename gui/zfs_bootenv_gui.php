@@ -78,6 +78,7 @@ function get_zfs_be() {
 			$r['be'] = 'unknown'; // XXX
 			$r['name'] = 'unknown'; // XXX
 			$r['stat'] = $a[1];
+			$r['mount'] = $a[2];
 			$r['name'] = $name;
 		endif;
 		$r['used'] = $a[3];
@@ -265,20 +266,22 @@ $document->render();
 		<colgroup>
 			<col style="width:5%">
 			<col style="width:35%">
-			<col style="width:20%">
+			<col style="width:5%">
+			<col style="width:35%">
 			<col style="width:10%">
-			<col style="width:20%">
+			<col style="width:10%">
 			<col style="width:10%">
 		</colgroup>
 		<thead>
 <?php
 			html_separator2();
-			html_titleline2(gettext('Overview'), 6);
+			html_titleline2(gettext('Overview'), 7);
 ?>
 			<tr>
 				<th class="lhelc"><?=gtext('Select');?></th>
 				<th class="lhell"><?=sprintf('%1$s (%2$d/%3$d)', gtext('Boot Environment'), count($sphere_array), count($a_bename));?></th>
 				<th class="lhell"><?=gtext('Status');?></th>
+				<th class="lhell"><?=gtext('Mountpoint');?></th>
 				<th class="lhell"><?=gtext('Used');?></th>
 				<th class="lhell"><?=gtext('Create Date');?></th>
 				<th class="lhebl"><?=gtext('Toolbox');?></th>
@@ -307,6 +310,7 @@ $document->render();
 					</td>
 					<td class="lcell"><?=htmlspecialchars($sphere_record['name']);?>&nbsp;</td>
 					<td class="lcell"><?=htmlspecialchars($sphere_record['stat']);?>&nbsp;</td>
+					<td class="lcell"><?=htmlspecialchars($sphere_record['mount']);?>&nbsp;</td>
 					<td class="lcell"><?=htmlspecialchars($sphere_record['used']);?>&nbsp;</td>
 					<td class="lcell"><?=htmlspecialchars($sphere_record['creation']);?>&nbsp;</td>
 					<td class="lcebld">
@@ -343,7 +347,7 @@ $document->render();
 		</tbody>
 		<tfoot>
 			<tr>
-				<td class="lcenl" colspan="5"></td>
+				<td class="lcenl" colspan="6"></td>
 				<td class="lceadd">
 					<a href="zfs_bootenv_add_gui.php"><img src="<?=$img_path['add'];?>" title="<?=$gt_record_add;?>" border="0" alt="<?=$gt_record_add;?>" class="spin oneemhigh"/></a>
 				</td>

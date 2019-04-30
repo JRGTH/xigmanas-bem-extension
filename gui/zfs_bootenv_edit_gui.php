@@ -141,6 +141,46 @@ if($_POST):
 				endif;
 				break;
 
+			case 'mount':
+				// Input validation not required
+				if(empty($input_errors)):
+					$bootenv = [];
+					$bootenv['uuid'] = $_POST['uuid'];
+					$bootenv['bename'] = $_POST['bename'];
+
+					$item = $bootenv['bename'];
+					$mountpoint = "/mnt/{$item}_BE";
+					$cmd = ("/usr/local/sbin/beadm mount {$item} {$mountpoint}");
+					$return_val = mwexec($cmd);
+					if($return_val == 0):
+						header('Location: zfs_bootenv_gui.php');
+						exit;
+					else:
+						$errormsg .= gtext("Failed to activate Boot Environment.");
+					endif;
+				endif;
+				break;
+
+			case 'unmount':
+				// Input validation not required
+				if(empty($input_errors)):
+					$bootenv = [];
+					$bootenv['uuid'] = $_POST['uuid'];
+					$bootenv['bename'] = $_POST['bename'];
+
+					$item = $bootenv['bename'];
+					$mountpoint = "/mnt/{$item}_BE";
+					$cmd = ("/usr/local/sbin/beadm unmount {$item} && rm -r {$mountpoint}");
+					$return_val = mwexec($cmd);
+					if($return_val == 0):
+						header('Location: zfs_bootenv_gui.php');
+						exit;
+					else:
+						$errormsg .= gtext("Failed to activate Boot Environment.");
+					endif;
+				endif;
+				break;
+
 			case 'delete':
 				// Input validation not required
 				if(empty($input_errors)):
@@ -188,6 +228,14 @@ function action_change() {
 		case "rename":
 			showElementById('newname_tr','show');
 			showElementById('dateadd_tr','show');
+			break;
+		case "mount":
+			showElementById('newname_tr','hide');
+			showElementById('dateadd_tr','hide');
+			break;
+		case "unmount":
+			showElementById('newname_tr','hide');
+			showElementById('dateadd_tr','hide');
 			break;
 		case "delete":
 			showElementById('newname_tr','hide');
@@ -237,6 +285,8 @@ $document->render();
 			$a_action = [
 				'activate' => gettext('Activate'),
 				'rename' => gettext('Rename'),
+				'mount' => gettext('mount'),
+				'unmount' => gettext('unmount'),
 				'delete' => gettext('Delete'),
 			];
 			html_combobox2('action',gettext('Action'),$pconfig['action'],$a_action,'',true,false,'action_change()');
