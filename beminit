@@ -150,6 +150,7 @@ extension_upgrade()
 			chmod +x ${CWDIR}/update/${SCRIPTNAME}
 			cp -Rf ${CWDIR}/update/* ${CWDIR}/
 			rm -r ${CWDIR}/update
+			rm -f ${CWDIR}/master.zip
 
 			# Logging the update event.
 			UPDATEVERSION=$(cat ${CWDIR}/version)
