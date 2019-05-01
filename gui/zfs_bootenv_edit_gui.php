@@ -33,6 +33,34 @@ require_once 'auth.inc';
 require_once 'guiconfig.inc';
 require_once 'zfs.inc';
 
+// Initialize some variables.
+$zroot = "zroot";
+$beds= "ROOT";
+$confdir = "/var/etc/bemconf";
+$cwdir = exec("/usr/bin/grep 'INSTALL_DIR=' {$confdir}/conf/bem_config | cut -d'\"' -f2");
+$rootfolder = $cwdir;
+$configfile = "{$rootfolder}/conf/bem_config";
+$backup_path = exec("/bin/cat {$configfile} | /usr/bin/grep 'BACKUP_DIR=' | cut -d'\"' -f2");
+$archive_ext_def = "zfs";
+$mount_prefix_def = "_BE";
+$mountpoint_def = "/mnt/";
+
+// Ensure the zfs send paramerers are specified.
+$zfs_sendparams = exec("/usr/bin/grep 'ZFS_SENDPARAMS=' {$confdir}/conf/bem_config | cut -d'\"' -f2");
+if ($zfs_sendparams == "") {
+	$zfs_sendparams_def = "";
+	exec("/usr/sbin/sysrc -f {$configfile} ZFS_SENDPARAMS='{$zfs_sendparams_def}'");
+	$zfs_sendparams = $zfs_sendparams_def;
+}
+
+// Ensure the compression method is specified.
+$compress_method = exec("/usr/bin/grep 'DEFAULT_COMPRESS=' {$confdir}/conf/bem_config | cut -d'\"' -f2");
+if ($compress_method == "") {
+	$compress_method_def = "xz -0 -v";
+	exec("/usr/sbin/sysrc -f {$configfile} DEFAULT_COMPRESS='{$compress_method_def}'");
+	$compress_method = $compress_method_def;
+}
+
 if(isset($_GET['uuid'])):
 	$uuid = $_GET['uuid'];
 endif;
@@ -40,7 +68,7 @@ if(isset($_POST['uuid'])):
 	$uuid = $_POST['uuid'];
 endif;
 
-$pgtitle = [gtext('Boot Environment'),gtext('Edit')];
+$pgtitle = [gtext("Extensions"), gtext('Boot Environment'),gtext('Edit')];
 
 if(isset($_GET['bename'])):
 	$bootenv = $_GET['bename'];
@@ -89,7 +117,7 @@ if($_POST):
 
 					$item = $bootenv['bename'];
 					$cmd = ("/usr/local/sbin/beadm activate {$item}");
-					$return_val = mwexec($cmd);
+					unset($output,$retval);mwexec2($cmd,$output,$retval);
 					if($return_val == 0):
 						header('Location: zfs_bootenv_gui.php');
 						exit;
@@ -122,16 +150,16 @@ if($_POST):
 					$cmd1 = ("/usr/local/sbin/beadm rename {$item} {$newname}");
 					$cmd2 = ("/usr/local/sbin/beadm rename {$item} {$newname}-{$date}");
 					if ($_POST['dateadd']):
-						$return_val = mwexec($cmd2);
-						if($return_val == 0):
+						unset($output,$retval);mwexec2($cmd2,$output,$retval);
+						if($retval == 0):
 							header('Location: zfs_bootenv_gui.php');
 							exit;
 						else:
 							$errormsg .= gtext("Failed to rename Boot Environment.");
 						endif;
 					else:
-						$return_val = mwexec($cmd1);
-						if($return_val == 0):
+						unset($output,$retval);mwexec2($cmd1,$output,$retval);
+						if($retval == 0):
 							header('Location: zfs_bootenv_gui.php');
 							exit;
 						else:
@@ -149,14 +177,14 @@ if($_POST):
 					$bootenv['bename'] = $_POST['bename'];
 
 					$item = $bootenv['bename'];
-					$mountpoint = "/mnt/{$item}_BE";
+					$mountpoint = "{$mountpoint_def}{$item}{$mount_prefix_def}";
 					$cmd = ("/usr/local/sbin/beadm mount {$item} {$mountpoint}");
-					$return_val = mwexec($cmd);
+					unset($output,$retval);mwexec2($cmd,$output,$retval);
 					if($return_val == 0):
 						header('Location: zfs_bootenv_gui.php');
 						exit;
 					else:
-						$errormsg .= gtext("Failed to activate Boot Environment.");
+						$errormsg .= gtext("Failed to mount Boot Environment.");
 					endif;
 				endif;
 				break;
@@ -169,14 +197,44 @@ if($_POST):
 					$bootenv['bename'] = $_POST['bename'];
 
 					$item = $bootenv['bename'];
-					$mountpoint = "/mnt/{$item}_BE";
+					$mountpoint = "{$mountpoint_def}{$item}{$mount_prefix_def}";
 					$cmd = ("/usr/local/sbin/beadm unmount {$item} && rm -r {$mountpoint}");
-					$return_val = mwexec($cmd);
-					if($return_val == 0):
+					unset($output,$retval);mwexec2($cmd,$output,$retval);
+					if($retval == 0):
 						header('Location: zfs_bootenv_gui.php');
 						exit;
 					else:
-						$errormsg .= gtext("Failed to activate Boot Environment.");
+						$errormsg .= gtext("Failed to unmount Boot Environment.");
+					endif;
+				endif;
+				break;
+
+			case 'backup':
+				// Input validation not required
+				if(empty($input_errors)):
+					$bootenv = [];
+					$bootenv['uuid'] = $_POST['uuid'];
+					$bootenv['bename'] = $_POST['bename'];
+					$item = $bootenv['bename'];
+
+					// Take a recent snapshot of the boot environment before backup.
+					$date = (strftime('-%Y-%m-%d-%H%M%S'));
+					$cmd1 = ("/sbin/zfs snapshot zroot/ROOT/{$item}@{$item}{$date}");
+					$return_val = mwexec($cmd1);
+					if($return_val == 0):
+						header('Location: zfs_bootenv_gui.php');
+					else:
+						$errormsg .= gtext("Failed to snapshot Boot Environment.");
+					endif;
+
+					// Perform the boot environment@snapshot backup.
+					$cmd2 = ("/sbin/zfs send {$zfs_sendparams} {$zroot}/{$beds}/{$item}@{$item}{$date} | {$compress_method} > {$backup_path}/{$item}{$date}.{$archive_ext_def}");
+					unset($output,$retval);mwexec2($cmd2,$output,$retval);
+					if($retval == 0):
+						header('Location: zfs_bootenv_gui.php');
+						exit;
+					else:
+						$errormsg .= gtext("Failed to backup Boot Environment@snapshot.");
 					endif;
 				endif;
 				break;
@@ -190,8 +248,8 @@ if($_POST):
 
 					$item = $bootenv['bename'];
 					$cmd = ("/usr/local/sbin/beadm destroy -F {$item}");
-					$return_val = mwexec($cmd);
-					if($return_val == 0):
+					unset($output,$retval);mwexec2($cmd,$output,$retval);
+					if($retval == 0):
 						header('Location: zfs_bootenv_gui.php');
 						exit;
 					else:
@@ -237,6 +295,10 @@ function action_change() {
 			showElementById('newname_tr','hide');
 			showElementById('dateadd_tr','hide');
 			break;
+		case "backup":
+			showElementById('newname_tr','hide');
+			showElementById('dateadd_tr','hide');
+			break;
 		case "delete":
 			showElementById('newname_tr','hide');
 			showElementById('dateadd_tr','hide');
@@ -253,8 +315,9 @@ $document->
 	add_area_tabnav()->
 		push()->
 		add_tabnav_upper()->
-			ins_tabnav_record('zfs_bootenv_gui.php',gettext('Boot Environments'))->
-			ins_tabnav_record('zfs_bootenv_info_gui.php',gettext('Information'));
+			ins_tabnav_record('zfs_bootenv_gui.php',gettext('Boot Environments'),gettext('Reload page'),true)->
+			ins_tabnav_record('zfs_bootenv_info_gui.php',gettext('Information'),gettext('Reload page'),true)->
+			ins_tabnav_record('zfs_bootenv_maintain_gui.php',gettext('Maintenance'),gettext('Reload page'),true);
 $document->render();
 ?>
 <form action="zfs_bootenv_edit_gui.php" method="post" name="iform" id="iform"><table id="area_data"><tbody><tr><td id="area_data_frame">
@@ -287,6 +350,7 @@ $document->render();
 				'rename' => gettext('Rename'),
 				'mount' => gettext('mount'),
 				'unmount' => gettext('unmount'),
+				'backup' => gettext('Backup'),
 				'delete' => gettext('Delete'),
 			];
 			html_combobox2('action',gettext('Action'),$pconfig['action'],$a_action,'',true,false,'action_change()');
@@ -302,6 +366,9 @@ $document->render();
 		<input name="bename" type="hidden" value="<?=$pconfig['bename'];?>" />
 		<input name="pool" type="hidden" value="<?=$pconfig['pool'];?>" />
 		<input name="name" type="hidden" value="<?=$pconfig['name'];?>" />
+	</div>
+	<div id="remarks">
+		<?php html_remark("note", gtext("Note"), sprintf(gtext("Some tasks such as backups may render the WebGUI unresponsive until task completes.")));?>
 	</div>
 <?php
 	include 'formend.inc';

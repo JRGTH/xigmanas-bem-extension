@@ -3,6 +3,7 @@
 =======================================
 Version        Description
 
+0.1.5..........Added BE backup/restore functionality and maintenance tab.
 0.1.4..........Added BE mount/unmount functionality.
 0.1.3..........Minor code changes.
 0.1.2..........Minor code changes.

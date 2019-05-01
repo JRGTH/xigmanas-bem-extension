@@ -177,7 +177,7 @@ else {
 }
 if (is_file("{$rootfolder}/postinit")) unlink("{$rootfolder}/postinit");
 
-$pgtitle = [gtext('Boot Environments')];
+$pgtitle = [gtext("Extensions"), gtext('Boot Environments')];
 include 'fbegin.inc';
 ?>
 <script type="text/javascript">
@@ -228,7 +228,8 @@ $document->
 		push()->
 		add_tabnav_upper()->
 			ins_tabnav_record('zfs_bootenv_gui.php',gettext('Boot Environments'))->
-			ins_tabnav_record('zfs_bootenv_info_gui.php',gettext('Information'));
+			ins_tabnav_record('zfs_bootenv_info_gui.php',gettext('Information'))->
+			ins_tabnav_record('zfs_bootenv_maintain_gui.php',gettext('Maintenance'));
 $document->render();
 ?>
 <form action="zfs_bootenv_gui.php" method="post" name="iform" id="iform"><table id="area_data"><tbody><tr><td id="area_data_frame">

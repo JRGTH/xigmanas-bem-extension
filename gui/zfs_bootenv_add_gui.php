@@ -33,7 +33,7 @@ require_once 'auth.inc';
 require_once 'guiconfig.inc';
 require_once 'zfs.inc';
 
-$pgtitle = [gtext('Boot Environment'),gtext('Add')];
+$pgtitle = [gtext("Extensions"), gtext('Boot Environment'),gtext('Add')];
 
 if(!$pconfig['bename']):
 	$pconfig['bename'] = 'bootenv';
@@ -59,8 +59,8 @@ if($_POST):
 		$cmd1 = ("/usr/local/sbin/beadm create {$prefix}{$date}");
 		$cmd2 = ("/usr/local/sbin/beadm create {$prefix}{$date} && /usr/local/sbin/beadm activate {$prefix}{$date}");
 		if ($_POST['activate']):
-			$return_val = mwexec($cmd2);
-			if($return_val == 0):
+			unset($output,$retval);mwexec2($cmd2,$output,$retval);
+			if($retval == 0):
 				//$savemsg .= gtext("Boot Environment created and activated successfully.");
 				header('Location: zfs_bootenv_gui.php');
 				exit;
@@ -68,8 +68,8 @@ if($_POST):
 				$errormsg .= gtext("Failed to create and/or activate Boot Environment.");
 			endif;
 		else:
-			$return_val = mwexec($cmd1);
-			if($return_val == 0):
+			unset($output,$retval);mwexec2($cmd1,$output,$retval);
+			if($retval == 0):
 				//$savemsg .= gtext("Boot Environment created successfully.");
 				header('Location: zfs_bootenv_gui.php');
 				exit;
@@ -97,7 +97,8 @@ $document->
 		push()->
 		add_tabnav_upper()->
 			ins_tabnav_record('zfs_bootenv_gui.php',gettext('Boot Environments'),gettext('Reload page'),true)->
-			ins_tabnav_record('zfs_bootenv_info_gui.php',gettext('Information'),gettext('Reload page'),true);
+			ins_tabnav_record('zfs_bootenv_info_gui.php',gettext('Information'),gettext('Reload page'),true)->
+			ins_tabnav_record('zfs_bootenv_maintain_gui.php',gettext('Maintenance'),gettext('Reload page'),true);
 $document->render();
 ?>
 <form action="zfs_bootenv_add_gui.php" method="post" name="iform" id="iform"><table id="area_data"><tbody><tr><td id="area_data_frame">

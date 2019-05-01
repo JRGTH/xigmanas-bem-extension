@@ -67,7 +67,7 @@ $entity_name = NULL;
 if(isset($_GET['uuid']) && is_string($_GET['uuid'])):
 	$entity_name = sprintf('%s',$_GET['uuid']);
 endif;
-$pgtitle = [gtext('Boot Environments'),gtext('Information')];
+$pgtitle = [gtext("Extensions"), gtext('Boot Environments'),gtext('Information')];
 include 'fbegin.inc';
 $document = new co_DOMDocument();
 $document->
@@ -75,7 +75,8 @@ $document->
 		push()->
 		add_tabnav_upper()->
 			ins_tabnav_record('zfs_bootenv_gui.php',gettext('Boot Environments'),gettext('Reload page'),true)->
-			ins_tabnav_record('zfs_bootenv_info_gui.php',gettext('Information'),gettext('Reload page'),true);
+			ins_tabnav_record('zfs_bootenv_info_gui.php',gettext('Information'),gettext('Reload page'),true)->
+			ins_tabnav_record('zfs_bootenv_maintain_gui.php',gettext('Maintenance'),gettext('Reload page'),true);
 $document->render();
 ?>
 <table id="area_data"><tbody><tr><td id="area_data_frame">
