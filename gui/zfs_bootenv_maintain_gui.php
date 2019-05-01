@@ -262,7 +262,7 @@ $document->render();
 				<input name="restore" type="submit" class="formbtn" title="<?=gtext("Restore Boot Environment");?>" value="<?=gtext("Restore");?>" />
 			</div>
 			<div id="remarks">
-				<?php html_remark("notes", gtext("Notes"), sprintf(gtext("Make sure the %s directori is a permanent data location with plenty of space."), gtext("backup")));?>
+				<?php html_remark("notes", gtext("Notes"), sprintf(gtext("Make sure the %s directory is a permanent data location with plenty of space."), gtext("backup")));?>
 				<?php html_remark("", gtext(""), sprintf(gtext("Some tasks such as backups and restore may render the WebGUI unresponsive until task completes.")));?>
 			</div>
 			<table width="100%" border="0" cellpadding="6" cellspacing="0">
