@@ -357,7 +357,6 @@ ext_enable_disable()
 pkg_upgrade()
 {
 	# Re-fetch beadm package and extract.
-	echo "Preparing to overwrite current beadm files..."
 	beadm_update_download
 
 	# Check for extension updates.

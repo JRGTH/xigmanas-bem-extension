@@ -3,6 +3,7 @@
 =======================================
 Version        Description
 
+0.1.8..........Display msg only when beadm update required.
 0.1.7..........Move global variables to inc file and config checks.
 0.1.6..........Fix typo.
 0.1.5..........Added BE backup/restore functionality and maintenance tab.
