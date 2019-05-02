@@ -136,10 +136,22 @@ if ($_POST) {
 		if ("{$backup_path}" == "") {
 			$backup_path = "{$rootfolder}/backup";
 			}
-		else {
-			exec("/usr/sbin/sysrc -f {$configfile} BACKUP_DIR={$backup_path}");
+		if (!is_file($backup_path)) {
+			$cmd = "/usr/sbin/sysrc -f {$configfile} BACKUP_DIR={$backup_path}";
+			unset($retval);mwexec($cmd,$retval);
+			if ($retval == 0) {
+				$savemsg .= gtext("Extension settings saved successfully.");
+				exec("echo '{$date}: {$application} Extension settings saved successfully' >> {$logfile}");
+				}
+			else {
+				$input_errors[] = gtext("Failed to save extension settings.");
+				exec("echo '{$date}: {$application} Failed to save extension settings' >> {$logfile}");
+				}
 			}
-		exec("echo '{$date}: Extension settings saved' >> {$logfile}");
+		else {
+			$input_errors[] = gtext("Failed to save extension settings.");
+			exec("echo '{$date}: {$application} Failed to save extension settings' >> {$logfile}");
+			}
 	}
 }
 
