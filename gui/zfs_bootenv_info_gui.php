@@ -31,6 +31,7 @@
 */
 require_once 'auth.inc';
 require_once 'guiconfig.inc';
+require_once("zfs_bootenv_gui-lib.inc");
 
 function zfs_get_be_list(string $entity_name = NULL) {
 	if(isset($entity_name)):

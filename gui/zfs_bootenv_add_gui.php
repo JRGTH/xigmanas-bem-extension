@@ -32,6 +32,7 @@
 require_once 'auth.inc';
 require_once 'guiconfig.inc';
 require_once 'zfs.inc';
+require_once("zfs_bootenv_gui-lib.inc");
 
 $pgtitle = [gtext("Extensions"), gtext('Boot Environment'),gtext('Add')];
 

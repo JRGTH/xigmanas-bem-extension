@@ -45,6 +45,10 @@ ZROOT="zroot"
 CONFIG="/cf/conf/config.xml"
 APPNAME="bem"
 BEADM="beadm"
+ZFS_SENDPARAMS=""
+ZFS_RECVPARAM=""
+DEFAULT_COMPRESS="xz -0 -v"
+DEFAULT_DECOMPRESS="xz -c -d -v"
 EXTLOGFILE="${CWDIR}/log/bem_ext.log"
 FULLAPPNAME="BE Manager"
 LONGAPPNAME="Boot Environments Manager"
@@ -79,6 +83,26 @@ runtime_config()
 	fi
 	if [ ! -d ${CWDIR}/log ]; then
 		mkdir -p ${CWDIR}/log
+	fi
+
+	# Restore default variables if missing.
+	if ! grep -qw "GUI_ENABLE=" ${CWDIR}${BEMCONF} >/dev/null 2>&1; then
+		sysrc -f ${CWDIR}${BEMCONF} GUI_ENABLE="YES" >/dev/null 2>&1
+	fi
+	if ! grep -qw "INSTALL_DIR=" ${CWDIR}${BEMCONF} >/dev/null 2>&1; then
+		sysrc -f ${CWDIR}${BEMCONF} INSTALL_DIR="${CWDIR}" >/dev/null 2>&1
+	fi
+	if ! grep -qw "ZFS_SENDPARAMS=" ${CWDIR}${BEMCONF} >/dev/null 2>&1; then
+		sysrc -f ${CWDIR}${BEMCONF} ZFS_SENDPARAMS="${ZFS_SENDPARAMS}" >/dev/null 2>&1
+	fi
+	if ! grep -qw "ZFS_RECVPARAM=" ${CWDIR}${BEMCONF} >/dev/null 2>&1; then
+		sysrc -f ${CWDIR}${BEMCONF} ZFS_RECVPARAM="${ZFS_RECVPARAM}" >/dev/null 2>&1
+	fi
+	if ! grep -qw "DEFAULT_COMPRESS=" ${CWDIR}${BEMCONF} >/dev/null 2>&1; then
+		sysrc -f ${CWDIR}${BEMCONF} DEFAULT_COMPRESS="${DEFAULT_COMPRESS}" >/dev/null 2>&1
+	fi
+	if ! grep -qw "DEFAULT_DECOMPRESS=" ${CWDIR}${BEMCONF} >/dev/null 2>&1; then
+		sysrc -f ${CWDIR}${BEMCONF} DEFAULT_DECOMPRESS="${DEFAULT_DECOMPRESS}" >/dev/null 2>&1
 	fi
 }
 
@@ -251,7 +275,8 @@ EOF
 			error_notify "Error: A problem has occurred while executing postinit file."
 			echo "Done!"
 		fi
-		sysrc -f ${CWDIR}${BEMCONF} GUI_ENABLE=YES INSTALL_DIR=${CWDIR} >/dev/null 2>&1
+		sysrc -f ${CWDIR}${BEMCONF} GUI_ENABLE="YES" INSTALL_DIR="${CWDIR}" ZFS_SENDPARAMS="${ZFS_SENDPARAMS}" DEFAULT_COMPRESS="${DEFAULT_COMPRESS}" \
+		DEFAULT_DECOMPRESS="${DEFAULT_DECOMPRESS}" >/dev/null 2>&1
 	fi
 }
 
@@ -298,16 +323,7 @@ gui_disable()
 {
 	# Disable gui if -t option specified.
 	if [ -d "${CWDIR}/gui" ]; then
-		if [ -f "${WWWPATH}/zfs_bootenv_gui.php" ]; then
-			GUIFILES="zfs_bootenv_add_gui.php zfs_bootenv_edit_gui.php zfs_bootenv_gui.php zfs_bootenv_info_gui.php"
-			for file in ${GUIFILES}
-			do
-				rm -f ${WWWPATH}/${file}
-			done
-			fi
-		rm -rf ${WWWPATH}/ext/bem-gui
-		rm -f ${LOCALSHAREPATH}/locale-bem
-		rm -rf ${BEMCONFLINK}
+		remove_gui_files
 		sysrc -f ${CWDIR}${BEMCONF} GUI_ENABLE=NO >/dev/null 2>&1 || error_notify "Error: A problem while removing extension gui files."
 		exit 0
 	else
@@ -348,6 +364,20 @@ pkg_upgrade()
 	extension_upgrade
 }
 
+remove_gui_files()
+{
+	if [ -f "${WWWPATH}/zfs_bootenv_gui.php" ]; then
+		GUIFILES="zfs_bootenv_add_gui.php zfs_bootenv_edit_gui.php zfs_bootenv_gui.php zfs_bootenv_info_gui.php zfs_bootenv_maintain_gui.php zfs_bootenv_gui-lib.inc"
+		for file in ${GUIFILES}
+		do
+			rm -f ${WWWPATH}/${file}
+		done
+	fi
+	rm -rf ${WWWPATH}/ext/bem-gui
+	rm -f ${LOCALSHAREPATH}/locale-bem
+	rm -rf ${BEMCONFLINK}
+}
+
 remove_addon()
 {
 	# Confirm for addon removal.
@@ -360,16 +390,7 @@ remove_addon()
 			esac
 		done
 	echo "Proceeding..."
-	if [ -f "${WWWPATH}/zfs_bootenv_gui.php" ]; then
-		GUIFILES="zfs_bootenv_add_gui.php zfs_bootenv_edit_gui.php zfs_bootenv_gui.php zfs_bootenv_info_gui.php"
-		for file in ${GUIFILES}
-		do
-			rm -f ${WWWPATH}/${file}
-		done
-	fi
-	rm -rf ${WWWPATH}/ext/bem-gui
-	rm -f ${LOCALSHAREPATH}/locale-bem
-	rm -rf ${BEMCONFLINK}
+	remove_gui_files
 
 	# Remove addon related files and folders only-
 	# to protect any user-created custom files.
@@ -406,17 +427,7 @@ reset_install()
 		rm -f ${CWDIR}/version
 	fi
 
-	if [ -f "${WWWPATH}/zfs_bootenv_gui.php" ]; then
-		GUIFILES="zfs_bootenv_add_gui.php zfs_bootenv_edit_gui.php zfs_bootenv_gui.php zfs_bootenv_info_gui.php"
-		for file in ${GUIFILES}
-		do
-			rm -f ${WWWPATH}/${file}
-		done
-	fi
-	rm -rf ${WWWPATH}/ext/bem-gui
-	rm -f ${LOCALSHAREPATH}/locale-bem
-	rm -rf ${BEMCONFLINK}
-
+	remove_gui_files
 	runtime_config
 }
 

@@ -32,6 +32,7 @@
 require_once 'auth.inc';
 require_once 'guiconfig.inc';
 require_once 'zfs.inc';
+require_once("zfs_bootenv_gui-lib.inc");
 
 $sphere_scriptname = basename(__FILE__);
 $sphere_scriptname_child = 'zfs_bootenv_edit_gui.php';
@@ -162,20 +163,6 @@ if($_POST):
 		endforeach;
 	endif;
 endif;
-
-// Initialize some variables.
-$confdir = "/var/etc/bemconf";
-$cwdir = exec("/usr/bin/grep 'INSTALL_DIR=' {$confdir}/conf/bem_config | cut -d'\"' -f2");
-$rootfolder = $cwdir;
-if ($rootfolder == "") $input_errors[] = gtext("Extension installed with fault");
-else {
-// Initialize locales.
-	$textdomain = "/usr/local/share/locale";
-	$textdomain_bem = "/usr/local/share/locale-bem";
-	if (!is_link($textdomain_bem)) { mwexec("ln -s {$rootfolder}/locale-bem {$textdomain_bem}", true); }
-	bindtextdomain("xigmanas", $textdomain_bem);
-}
-if (is_file("{$rootfolder}/postinit")) unlink("{$rootfolder}/postinit");
 
 $pgtitle = [gtext("Extensions"), gtext('Boot Environments')];
 include 'fbegin.inc';

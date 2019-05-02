@@ -32,34 +32,7 @@
 require_once 'auth.inc';
 require_once 'guiconfig.inc';
 require_once 'zfs.inc';
-
-// Initialize some variables.
-$zroot = "zroot";
-$beds= "ROOT";
-$confdir = "/var/etc/bemconf";
-$cwdir = exec("/usr/bin/grep 'INSTALL_DIR=' {$confdir}/conf/bem_config | cut -d'\"' -f2");
-$rootfolder = $cwdir;
-$configfile = "{$rootfolder}/conf/bem_config";
-$backup_path = exec("/bin/cat {$configfile} | /usr/bin/grep 'BACKUP_DIR=' | cut -d'\"' -f2");
-$archive_ext_def = "zfs";
-$mount_prefix_def = "_BE";
-$mountpoint_def = "/mnt/";
-
-// Ensure the zfs send paramerers are specified.
-$zfs_sendparams = exec("/usr/bin/grep 'ZFS_SENDPARAMS=' {$confdir}/conf/bem_config | cut -d'\"' -f2");
-if ($zfs_sendparams == "") {
-	$zfs_sendparams_def = "";
-	exec("/usr/sbin/sysrc -f {$configfile} ZFS_SENDPARAMS='{$zfs_sendparams_def}'");
-	$zfs_sendparams = $zfs_sendparams_def;
-}
-
-// Ensure the compression method is specified.
-$compress_method = exec("/usr/bin/grep 'DEFAULT_COMPRESS=' {$confdir}/conf/bem_config | cut -d'\"' -f2");
-if ($compress_method == "") {
-	$compress_method_def = "xz -0 -v";
-	exec("/usr/sbin/sysrc -f {$configfile} DEFAULT_COMPRESS='{$compress_method_def}'");
-	$compress_method = $compress_method_def;
-}
+require_once("zfs_bootenv_gui-lib.inc");
 
 if(isset($_GET['uuid'])):
 	$uuid = $_GET['uuid'];

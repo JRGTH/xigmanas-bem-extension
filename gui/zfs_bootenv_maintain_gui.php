@@ -32,6 +32,7 @@
 require("auth.inc");
 require("guiconfig.inc");
 require_once 'zfs.inc';
+require_once("zfs_bootenv_gui-lib.inc");
 
 $application = "Boot Environments Manager";
 $prdname = "beadm";
@@ -44,46 +45,6 @@ if ($return_val == 0) {
 		for ($i = 0; $i < count($config['rc']['postinit']['cmd']);) { if (preg_match('/beminit/', $config['rc']['postinit']['cmd'][$i])) break; ++$i; }
 	}
 }
-
-// Initialize some variables.
-//$rootfolder = dirname($config['rc']['postinit']['cmd'][$i]);
-$zroot = "zroot";
-$beds= "ROOT";
-$restore_name = "restore";
-$confdir = "/var/etc/bemconf";
-$cwdir = exec("/usr/bin/grep 'INSTALL_DIR=' {$confdir}/conf/bem_config | cut -d'\"' -f2");
-$rootfolder = $cwdir;
-$configfile = "{$rootfolder}/conf/bem_config";
-$versionfile = "{$rootfolder}/version";
-$date = strftime('%c');
-$logfile = "{$rootfolder}/log/bem_ext.log";
-$logevent = "{$rootfolder}/log/bem_last_event.log";
-
-// Ensure the zfs recv paramerers are specified.
-$zfs_recvparams = exec("/usr/bin/grep 'ZFS_RECVPARAM=' {$confdir}/conf/bem_config | cut -d'\"' -f2");
-if ($zfs_recvparams == "") {
-	$zfs_recvparams_def = "";
-	exec("/usr/sbin/sysrc -f {$configfile} ZFS_RECVPARAM='{$zfs_recvparams_def}'");
-	$zfs_recvparams = $zfs_recvparams_def;
-}
-
-// Ensure the decompression method is specified.
-$decompress_method = exec("/usr/bin/grep 'DEFAULT_DECOMPRESS=' {$confdir}/conf/bem_config | cut -d'\"' -f2");
-if ($decompress_method == "") {
-	$decompress_method_def = "xz -c -d -v";
-	exec("/usr/sbin/sysrc -f {$configfile} DEFAULT_DECOMPRESS='{$decompress_method_def}'");
-	$decompress_method = $decompress_method_def;
-}
-
-if ($rootfolder == "") $input_errors[] = gtext("Extension installed with fault");
-else {
-// Initialize locales.
-	$textdomain = "/usr/local/share/locale";
-	$textdomain_bem = "/usr/local/share/locale-bem";
-	if (!is_link($textdomain_bem)) { mwexec("ln -s {$rootfolder}/locale-bem {$textdomain_bem}", true); }
-	bindtextdomain("xigmanas", $textdomain_bem);
-}
-if (is_file("{$rootfolder}/postinit")) unlink("{$rootfolder}/postinit");
 
 // Set default backup directory.
 if (1 == mwexec("/bin/cat {$configfile} | /usr/bin/grep 'BACKUP_DIR='")) {
@@ -244,7 +205,7 @@ $document->render();
 			<?php if (!empty($input_errors)) print_input_errors($input_errors);?>
 			<?php if (!empty($savemsg)) print_info_box($savemsg);?>
 			<table width="100%" border="0" cellpadding="6" cellspacing="0">
-				<?php html_titleline(gtext("Sumamary"));?>
+				<?php html_titleline(gtext("Summary"));?>
 				<?php html_text("installation_directory", gtext("Installation directory"), sprintf(gtext("The extension is installed in %s"), $rootfolder));?>
 				<tr>
 					<td class="vncellt"><?=gtext("beadm version");?></td>
