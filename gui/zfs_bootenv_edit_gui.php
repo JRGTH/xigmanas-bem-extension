@@ -192,7 +192,7 @@ if($_POST):
 
 					// Take a recent snapshot of the boot environment before backup.
 					$date = (strftime('-%Y-%m-%d-%H%M%S'));
-					$cmd1 = ("/sbin/zfs snapshot zroot/ROOT/{$item}@{$item}{$date}");
+					$cmd1 = ("/sbin/zfs snapshot {$zroot}/{$beds}/{$item}@{$item}{$date}");
 					$return_val = mwexec($cmd1);
 					if($return_val == 0):
 						header('Location: zfs_bootenv_gui.php');
