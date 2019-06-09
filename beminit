@@ -180,6 +180,7 @@ extension_upgrade()
 			# Logging the update event.
 			UPDATEVERSION=$(cat ${CWDIR}/version)
 			echo "${DATE}: ${FULLAPPNAME} Extension upgraded to ${UPDATEVERSION}" >> ${EXTLOGFILE}
+			echo "${FULLAPPNAME} upgraded to version ${UPDATEVERSION}"
 			echo "${FULLAPPNAME} Extension package upgrade completed!"
 		else
 			echo "${FULLAPPNAME} Extension is on the latest version!"
