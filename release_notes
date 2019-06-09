@@ -3,6 +3,7 @@
 =======================================
 Version        Description
 
+0.2.1..........Add compression threading and cosmetic changes.
 0.2.0..........Minor code changes.
 0.1.9..........Add input validation for the backup directory.
 0.1.8..........Display msg only when beadm update required.

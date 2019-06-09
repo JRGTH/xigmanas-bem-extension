@@ -34,9 +34,9 @@ require_once 'guiconfig.inc';
 require_once("zfs_bootenv_gui-lib.inc");
 
 function zfs_get_be_list(string $entity_name = NULL) {
+	global $zroot, $beds;
 	if(isset($entity_name)):
-		//$cmd = sprintf('beadm list %s 2>&1',escapeshellarg($entity_name));
-		$cmd = sprintf('beadm list 2>&1',escapeshellarg($entity_name));
+		$cmd = sprintf("zfs list {$zroot}/{$beds}/{$entity_name} 2>&1",escapeshellarg($entity_name));
 	else:
 		$cmd = 'beadm list 2>&1';
 	endif;
@@ -46,17 +46,14 @@ function zfs_get_be_list(string $entity_name = NULL) {
 }
 function zfs_get_be_all(string $entity_name = NULL) {
 	if(isset($entity_name)):
-		//$cmd = sprintf('beadm list -a %s 2>&1',escapeshellarg($entity_name));
-		$cmd = sprintf('beadm list -a 2>&1',escapeshellarg($entity_name));
+		$cmd = "beadm list -a 2>&1";
 	else:
-		$cmd = 'beadm list -a 2>&1';
+		$cmd = 'beadm list -s 2>&1';
 	endif;
 	unset($a_names);
 	mwexec2($cmd,$a_names);
 	if(is_array($a_names) && count($a_names) > 0):
 		$names = implode(' ',array_map('escapeshellarg',$a_names));
-		//$cmd = sprintf('beadm list -s %s 2>&1',$names);
-		$cmd = sprintf('beadm list -s 2>&1',$names);
 		unset($output);
 		mwexec2($cmd,$output);
 	else:

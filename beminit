@@ -47,8 +47,8 @@ APPNAME="bem"
 BEADM="beadm"
 ZFS_SENDPARAMS=""
 ZFS_RECVPARAM=""
-DEFAULT_COMPRESS="xz -0 -v"
-DEFAULT_DECOMPRESS="xz -c -d -v"
+DEFAULT_COMPRESS="xz -0 -v --threads=0"
+DEFAULT_DECOMPRESS="xz -c -d -v --threads=0"
 EXTLOGFILE="${CWDIR}/log/bem_ext.log"
 FULLAPPNAME="BE Manager"
 LONGAPPNAME="Boot Environments Manager"
@@ -186,6 +186,7 @@ extension_upgrade()
 			rm -r ${CWDIR}/update
 		fi
 	fi
+	exit $?
 }
 
 product_check()
@@ -196,7 +197,6 @@ product_check()
 		ext_initial_download
 		beadm_update_download
 		postinit_cmd
-		#ext_enable_disable
 		gui_start
 	fi
 }
@@ -334,22 +334,6 @@ gui_disable()
 	if [ -d "${WWWPATH}/ext" ]; then
 		if [ ! "$(ls -A ${WWWPATH}/ext)" ]; then
 			rm -r ${WWWPATH}/ext
-		fi
-	fi
-}
-
-ext_enable_disable()
-{
-	# Start BE Manager extension gui if enabled.
-	if [ -d "${CWDIR}/gui" ]; then
-		GUI_STATUS=$(sysrc -f ${CWDIR}${BEMCONF} -qn GUI_ENABLE)
-		if [ "${GUI_STATUS}" = "YES" ]; then
-			BEM_ENABLE=$(sysrc -f ${CWDIR}${BEMCONF} -qn BEM_ENABLE)
-			if [ "${BEM_ENABLE}" = "NO" ]; then
-				exit 0
-			fi
-		else
-			break
 		fi
 	fi
 }
