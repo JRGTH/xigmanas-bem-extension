@@ -84,6 +84,7 @@ function get_zfs_be() {
 		endif;
 		$r['used'] = $a[3];
 		$r['creation'] = $a[4];
+		$r['epoch']   = strtotime($r['creation']); // Convert the datetime string to epoch.
 		$result[] = $r;
 	endforeach;
 	return $result;
@@ -111,10 +112,10 @@ function get_zfs_be_filter($bootenvs,$filter) {
 	else:
 		$now = time() / 86400;
 		$now *= 86400;
-		//$f_time = strtotime(sprintf('-%s',$filter['time']),$now);
+		$f_time = strtotime(sprintf('-%s',$filter['time']),$now);
 		$result = [];
 		foreach($bootenvs as $bootenv):
-			if($bootenv['creation']):
+			if($bootenv['epoch'] >= $f_time):
 				$result[] = $bootenv;
 			endif;
 		endforeach;
