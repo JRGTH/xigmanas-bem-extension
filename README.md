@@ -1,6 +1,6 @@
 **Description:**
 
- Boot Environments Manager Extension for NAS4Free/XigmaNAS.
+ Boot Environments Manager Extension for XigmaNAS.
 
  More information and description in the <a href="https://www.xigmanas.com/forums/viewtopic.php?f=71&t=14585">XigmaNAS Extension forums</a>
 

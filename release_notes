@@ -3,6 +3,7 @@
 =======================================
 Version        Description
 
+0.2.4..........Minor code changes.
 0.2.3..........Convert BE datetime string to epoch.
 0.2.2..........Display new extension version on upgrades.
 0.2.1..........Add compression threading and cosmetic changes.

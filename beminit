@@ -1,6 +1,6 @@
 #!/bin/sh
 # beminit
-# Boot Environments Manager add-on for NAS4Free/XigmaNAS Embedded x64 11.x and later.
+# Boot Environments Manager add-on for XigmaNAS Embedded x64 11.x and later.
 # (https://www.xigmanas.com/forums)
 # License: BSD2CLAUSE (BSD 2-clause Simplified License).
 # Debug script
@@ -228,7 +228,7 @@ postinit_cmd()
 		touch ${CWDIR}/postinit || error_notify "Error: A problem has occurred while creating the postinit file."
 		chmod +x ${CWDIR}/postinit
 		if [ ! "${PRDVERSION}" -ge "110" ]; then
-			# Generate php script for NAS4Free 10.3 versions.
+			# Generate php script for previous versions.
 			cat << EOF > ${CWDIR}/postinit
 <?php
 require_once("config.inc");
@@ -244,7 +244,7 @@ require_once("functions.inc");
 ?>
 EOF
 		else
-			# Generate php script for NAS4Free/XigmaNAS 11.x versions.
+			# Generate php script for XigmaNAS 11.x versions.
 			cat << EOF > ${CWDIR}/postinit
 <?php
 require_once("config.inc");
