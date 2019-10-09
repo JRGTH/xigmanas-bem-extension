@@ -5,7 +5,8 @@
 	Copyright (c) 2018 - 2019 Jose Rivera (JoseMR)
     All rights reserved.
 
-	Portions of XigmaNAS (https://www.xigmanas.com).
+	Portions of XigmaNAS® (https://www.xigmanas.com).
+	Copyright (c) 2018 XigmaNAS® <info@xigmanas.com>.
 	XigmaNAS® is a registered trademark of Michael Zoon (zoon01@xigmanas.com).
 	All rights reserved.
 
