@@ -6,7 +6,7 @@
     All rights reserved.
 
 	Portions of XigmaNAS (https://www.xigmanas.com).
-	Copyright (c) 2018 XigmaNAS <info@xigmanas.com>.
+	XigmaNAS® is a registered trademark of Michael Zoon (zoon01@xigmanas.com).
 	All rights reserved.
 
 	Redistribution and use in source and binary forms, with or without
