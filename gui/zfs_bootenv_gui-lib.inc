@@ -28,8 +28,8 @@
 
 // Initialize some variables.
 //$rootfolder = dirname($config['rc']['postinit']['cmd'][$i]);
-$zroot = "zroot";
 $beds= "ROOT";
+$zroot = exec("/sbin/mount | awk -F '/' '/ \/ / {print $1}'");
 $restore_name = "restore";
 $confdir = "/var/etc/bemconf";
 $cwdir = exec("/usr/bin/grep 'INSTALL_DIR=' {$confdir}/conf/bem_config | cut -d'\"' -f2");
