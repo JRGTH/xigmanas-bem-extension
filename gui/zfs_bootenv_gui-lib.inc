@@ -40,7 +40,7 @@ $date = strftime('%c');
 $logfile = "{$rootfolder}/log/bem_ext.log";
 $logevent = "{$rootfolder}/log/bem_last_event.log";
 $backup_path = exec("/bin/cat {$configfile} | /usr/bin/grep 'BACKUP_DIR=' | cut -d'\"' -f2");
-$archive_ext_def = "zfs";
+$archive_ext_def = "xz";
 $mount_prefix_def = "_BE";
 $mountpoint_def = "/mnt/";
 

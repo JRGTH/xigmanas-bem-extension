@@ -3,6 +3,7 @@
 =======================================
 Version        Description
 
+0.2.7..........Use xz file extension for standardize.
 0.2.6..........Set permissions to 700 on mounted BE's.
 0.2.5..........Update to work with any  'zroot' pool custom name.
 0.2.4..........Minor code changes.
