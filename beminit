@@ -457,7 +457,13 @@ get_versions()
 	fi
 
 	# Display product versions.
-	beadm version
+	if [ -f "${BECTLPATH}" ]; then
+		echo "currently using bectl"
+	else
+		if [ -f "${BEADMAPP}" ]; then
+			beadm version
+		fi
+	fi
 	echo "extension version: ${APPVERSION}"
 	exit 0
 }

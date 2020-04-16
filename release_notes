@@ -3,6 +3,7 @@
 =======================================
 Version        Description
 
+0.3.0..........update version info when using bectl.
 0.2.9..........Update to work with `bectl` command with fallback to beadm.
 0.2.8..........Minor code changes.
 0.2.7..........Use xz file extension for standardize.

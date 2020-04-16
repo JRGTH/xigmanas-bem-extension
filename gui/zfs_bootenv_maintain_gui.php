@@ -162,7 +162,7 @@ if (!is_dir($backup_path)) mwexec("mkdir -p {$backup_path}", true);
 
 function get_version_beadm() {
 		//exec("/usr/local/sbin/pkg info -I {$prdname}", $result);
-		exec("/usr/local/sbin/beadm version", $result);
+		exec("/usr/local/sbin/beadm version || [ -f /sbin/bectl ] && echo 'currently using bectl'", $result);
 		return ($result[0]);
 }
 
