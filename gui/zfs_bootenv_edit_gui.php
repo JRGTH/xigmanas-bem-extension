@@ -152,7 +152,11 @@ if($_POST):
 
 					$item = $bootenv['bename'];
 					$mountpoint = "{$mountpoint_def}{$item}{$mount_prefix_def}";
-					$cmd = ("/usr/local/sbin/beadm mount {$item} {$mountpoint} && /bin/chmod 0700 {$mountpoint}");
+					if (!is_dir($mountpoint)):
+						mkdir($mountpoint,0700);
+					endif;
+					#$cmd = ("/usr/local/sbin/beadm mount {$item} {$mountpoint} && /bin/chmod 0700 {$mountpoint}");
+					$cmd = ("/usr/local/sbin/beadm mount {$item} {$mountpoint}");
 					unset($output,$retval);mwexec2($cmd,$output,$retval);
 					if($return_val == 0):
 						header('Location: zfs_bootenv_gui.php');

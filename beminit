@@ -53,6 +53,7 @@ EXTLOGFILE="${CWDIR}/log/bem_ext.log"
 FULLAPPNAME="BE Manager"
 LONGAPPNAME="Boot Environments Manager"
 USRLOCAL="/usr/local"
+BECTLPATH="/sbin/bectl"
 BEADMPATH="${USRLOCAL}/sbin"
 BEADMAPP="${BEADMPATH}/${BEADM}"
 LOCALSHAREPATH="${USRLOCAL}/share"
@@ -74,6 +75,19 @@ error_notify()
 
 runtime_config()
 {
+	# Check and set be manager utility.
+	if [ ! -f "${BEADMAPP}" ]; then
+		if [ -f "/sbin/bectl" ]; then
+			ln -sf ${BECTLPATH} ${BEADMAPP}
+		else
+			beadm_initial_download
+			# Make sure command is installed.
+			if [ ! -f "${BEADMAPP}" ]; then
+				error_notify "Error: A suitable command for boot environments management was not found!"
+			fi
+		fi
+	fi
+
 	# Create required directories if missing.
 	if [ ! -d ${CWDIR}/conf ]; then
 		mkdir -p ${CWDIR}/conf
@@ -103,6 +117,24 @@ runtime_config()
 	fi
 	if ! grep -qw "DEFAULT_DECOMPRESS=" ${CWDIR}${BEMCONF} >/dev/null 2>&1; then
 		sysrc -f ${CWDIR}${BEMCONF} DEFAULT_DECOMPRESS="${DEFAULT_DECOMPRESS}" >/dev/null 2>&1
+	fi
+}
+
+beadm_initial_download()
+{
+	if [ ! -f "${BEADMAPP}" ]; then
+		# Fetch latest beadm package from Git.
+		echo "Fetching latest ${BEADM} files..."
+		fetch -ao ${CWDIR}/master.zip --no-verify-peer --timeout=30 ${BEADMURL} || \
+		error_notify "Error: A problem has occurred while fetching ${BEADM}."
+
+		# Extract beadm from package.
+		echo "Extracting ${BEADM} package..."
+		tar -xf ${CWDIR}/master.zip -C ${BEADMPATH} --strip-components 1 beadm-master/beadm || \
+		error_notify "Error: A problem has occurred while extractig ${BEADM} files."
+		chmod 555 ${BEADMPATH}/${BEADM}
+		rm -f ${CWDIR}/master.zip
+		echo "Done!"
 	fi
 }
 
@@ -196,7 +228,7 @@ product_check()
 	if [ "${PRODUCT}" = "NAS4FREE-x64" ] || [ "${PRODUCT}" = "XIGMANAS-x64" ]; then
 		create_addon_env
 		ext_initial_download
-		beadm_update_download
+		#beadm_update_download
 		postinit_cmd
 		gui_start
 	fi
@@ -342,7 +374,7 @@ gui_disable()
 pkg_upgrade()
 {
 	# Re-fetch beadm package and extract.
-	beadm_update_download
+	#beadm_update_download
 
 	# Check for extension updates.
 	extension_upgrade
