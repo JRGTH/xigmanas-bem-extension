@@ -77,7 +77,7 @@ runtime_config()
 {
 	# Check and set be manager utility.
 	if [ ! -f "${BEADMAPP}" ]; then
-		if [ -f "/sbin/bectl" ]; then
+		if [ -f "${BECTLPATH}" ]; then
 			ln -sf ${BECTLPATH} ${BEADMAPP}
 		else
 			beadm_initial_download
