@@ -333,7 +333,9 @@ gui_start()
 			mkdir -p ${BEMCONFLINK}
 			ln -Ffhs ${CWDIR}/conf ${BEMCONFLINK}/conf
 			# Copy the gui files.
-			cp -R ${CWDIR}/gui/* ${WWWPATH}/ || error_notify "Error: A problem has occurred while copying extension gui files."
+			ln -fhs ${CWDIR}/gui/ext/bem-gui ${WWWPATH}/ext/ || error_notify "Error: A problem has occurred while copying extension gui files."
+			ln -fhs ${CWDIR}/gui/zfs_bootenv_*.php ${WWWPATH}/ || error_notify "Error: A problem has occurred while copying extension gui files."
+			ln -fhs ${CWDIR}/gui/zfs_bootenv_*.inc ${WWWPATH}/ || error_notify "Error: A problem has occurred while copying extension gui files."
 		fi
 	fi
 }
@@ -345,7 +347,9 @@ gui_enable()
 		mkdir -p ${BEMCONFLINK}
 		ln -Ffhs ${CWDIR}/conf ${BEMCONFLINK}/conf
 		sysrc -f ${CWDIR}${BEMCONF} GUI_ENABLE=YES >/dev/null 2>&1
-		cp -R ${CWDIR}/gui/* ${WWWPATH}/ || error_notify "Error: A problem has occurred while copying extension gui files."
+		ln -fhs ${CWDIR}/gui/ext/bem-gui ${WWWPATH}/ext/ || error_notify "Error: A problem has occurred while copying extension gui files."
+		ln -fhs ${CWDIR}/gui/zfs_bootenv_*.php ${WWWPATH}/ || error_notify "Error: A problem has occurred while copying extension gui files."
+		ln -fhs ${CWDIR}/gui/zfs_bootenv_*.inc ${WWWPATH}/ || error_notify "Error: A problem has occurred while copying extension gui files."
 		exit 0
 	else
 		error_notify "Error: Extension gui files not found."
