@@ -6,7 +6,7 @@
 # Debug script
 #set -x
 
-# Copyright (c) 2019 José Rivera (JoseMR)
+# Copyright (c) 2019-2021 José Rivera (JoseMR)
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -29,7 +29,7 @@
 # THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 # Set environment.
-PATH=/sbin:/bin:/usr/sbin:/usr/bin:/usr/local/sbin:/usr/local/bin
+PATH=${PATH}:/sbin:/bin:/usr/sbin:/usr/bin:/usr/local/sbin:/usr/local/bin
 
 # Determine full working directory.
 CWDIR=$(dirname $(realpath $0))
@@ -76,15 +76,17 @@ error_notify()
 runtime_config()
 {
 	# Check and set be manager utility.
-	if [ ! -f "${BEADMAPP}" ]; then
-		if [ -f "${BECTLPATH}" ]; then
+	if [ -f "${BEADMAPP}"  ] && [ ! -f "${BECTLPATH}" ]; then
+		ln -sf ${BEADMAPP} ${BECTLPATH}
+	elif [ -f "${BECTLPATH}" ] && [ ! -f "${BEADMAPP}" ]; then
 			ln -sf ${BECTLPATH} ${BEADMAPP}
-		else
+	elif [ ! -f "${BECTLPATH}" ] && [ ! -f "${BEADMAPP}" ]; then
 			beadm_initial_download
-			# Make sure command is installed.
-			if [ ! -f "${BEADMAPP}" ]; then
-				error_notify "Error: A suitable command for boot environments management was not found!"
-			fi
+			ln -sf ${BEADMAPP} ${BECTLPATH}
+	else
+		# Make sure command is installed.
+		if [ ! -f "${BEADMAPP}" ]; then
+			error_notify "Error: A suitable command for boot environments management was not found!"
 		fi
 	fi
 

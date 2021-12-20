@@ -3,6 +3,7 @@
 =======================================
 Version        Description
 
+0.3.2..........Improve detection for beadm/bectl.
 0.3.1..........Link the extension gui files instead.
 0.3.0..........update version info when using bectl.
 0.2.9..........Update to work with `bectl` command with fallback to beadm.
