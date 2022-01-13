@@ -3,14 +3,14 @@
 	zfs_bootenv_gui.php
 
 	Copyright (c) 2018 - 2019 Jose Rivera (JoseMR)
-    All rights reserved.
+	All rights reserved.
 
 	Portions of XigmaNAS® (https://www.xigmanas.com).
 	Copyright (c) 2018 XigmaNAS® <info@xigmanas.com>.
 	XigmaNAS® is a registered trademark of Michael Zoon (zoon01@xigmanas.com).
 	All rights reserved.
 
-	Redistribution and use in source and binary forms, with or without
+    Redistribution and use in source and binary forms, with or without
     modification, are permitted provided that the following conditions are met:
 
     1. Redistributions of source code must retain the above copyright notice, this
@@ -98,13 +98,13 @@ else:
 	$filter_time = '1week';
 endif;
 $l_filter_time = [
-    '1week' => sprintf(gettext('%d week'),1),
-    '2weeks' => sprintf(gettext('%d weeks'),2),
-    '30days' => sprintf(gettext('%d days'),30),
-    '60days' => sprintf(gettext('%d days'),60),
-    '90days' => sprintf(gettext('%d days'),90),
-    '180days' => sprintf(gettext('%d days'),180),
-    '0' => gettext('All')
+	'0' => gettext('All'),
+	'1week' => sprintf(gettext('%d week'),1),
+	'2weeks' => sprintf(gettext('%d weeks'),2),
+	'30days' => sprintf(gettext('%d days'),30),
+	'60days' => sprintf(gettext('%d days'),60),
+	'90days' => sprintf(gettext('%d days'),90),
+	'180days' => sprintf(gettext('%d days'),180)
 ];
 
 function get_zfs_be_filter($bootenvs,$filter) {
@@ -260,7 +260,7 @@ $document->render();
 			<col style="width:35%">
 			<col style="width:10%">
 			<col style="width:10%">
-			<col style="width:10%">
+			<col style="width:5%">
 		</colgroup>
 		<thead>
 <?php

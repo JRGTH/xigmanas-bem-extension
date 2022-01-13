@@ -3,6 +3,7 @@
 =======================================
 Version        Description
 
+0.3.3..........Cosmetic changes, display all boot environments by default.
 0.3.2..........Improve detection for beadm/bectl.
 0.3.1..........Link the extension gui files instead.
 0.3.0..........update version info when using bectl.
