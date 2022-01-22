@@ -95,7 +95,7 @@ $a_bename = get_zfs_be();
 if(isset($_SESSION['filter_time'])):
 	$filter_time = $_SESSION['filter_time'];
 else:
-	$filter_time = '1week';
+	$filter_time = '0';
 endif;
 $l_filter_time = [
 	'0' => gettext('All'),
