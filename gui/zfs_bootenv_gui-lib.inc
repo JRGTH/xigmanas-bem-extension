@@ -36,7 +36,8 @@ $cwdir = exec("/usr/bin/grep 'INSTALL_DIR=' {$confdir}/conf/bem_config | cut -d'
 $rootfolder = $cwdir;
 $configfile = "{$rootfolder}/conf/bem_config";
 $versionfile = "{$rootfolder}/version";
-$date = strftime('%c');
+//$date = strftime('%c');                // Previous PHP versions, deprecated as of PHP 8.1.
+$date = date('D M d h:i:s Y', time());   // Equivalent date replacement for the previous strftime function.
 $logfile = "{$rootfolder}/log/bem_ext.log";
 $logevent = "{$rootfolder}/log/bem_last_event.log";
 $backup_path = exec("/bin/cat {$configfile} | /usr/bin/grep 'BACKUP_DIR=' | cut -d'\"' -f2");
