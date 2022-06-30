@@ -3,6 +3,7 @@
 =======================================
 Version        Description
 
+0.3.6..........Fix for PHP 8.1 compatibility.
 0.3.5..........Fix to replace deprecated PHP date function.
 0.3.4..........Display all boot environments by default.
 0.3.3..........Cosmetic changes, display all boot environments by default.
