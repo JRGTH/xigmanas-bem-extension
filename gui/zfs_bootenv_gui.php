@@ -229,9 +229,9 @@ $document->render();
 	if(!empty($savemsg)):
 		print_info_box($savemsg);
 	endif;
-	if(updatenotify_exists($sphere_notifier)):
-		print_config_change_box();
-	endif;
+	//if(updatenotify_exists($sphere_notifier)):
+	//	print_config_change_box();
+	//endif;
 ?>
 	<table class="area_data_settings">
 		<colgroup>
@@ -280,6 +280,9 @@ $document->render();
 		<tbody>
 <?php
 			foreach ($sphere_array as $sphere_record):
+				if($sphere_notifier = ''): $sphere_notifier = ''; endif;
+				if($identifier = ''): $identifier = ''; endif;
+				if($notificationmode = ''): $notificationmode = ''; endif;
 				$notificationmode = updatenotify_get_mode($sphere_notifier, $identifier);
 				$notdirty = (UPDATENOTIFY_MODE_DIRTY != $notificationmode) && (UPDATENOTIFY_MODE_DIRTY_CONFIG != $notificationmode);
 				$notprotected = !isset($sphere_record['protected']);
