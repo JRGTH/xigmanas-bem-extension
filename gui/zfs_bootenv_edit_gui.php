@@ -119,7 +119,8 @@ if($_POST):
 					$bootenv['dateadd'] = isset($_POST['dateadd']) ? true : false;
 
 					$item = $bootenv['bename'];
-					$date = strftime('%Y-%m-%d-%H%M%S');
+					//$date = (strftime('-%Y-%m-%d-%H%M%S')); // Previous PHP versions, deprecated as of PHP 8.1.
+					$date = date('-Y-m-d-His', time());       // Equivalent date replacement for the previous strftime function.
 					$newname = $bootenv['name'];
 					$cmd1 = ("/usr/local/sbin/beadm rename {$item} {$newname}");
 					$cmd2 = ("/usr/local/sbin/beadm rename {$item} {$newname}-{$date}");
@@ -196,7 +197,8 @@ if($_POST):
 					$item = $bootenv['bename'];
 
 					// Take a recent snapshot of the boot environment before backup.
-					$date = (strftime('-%Y-%m-%d-%H%M%S'));
+					//$date = (strftime('-%Y-%m-%d-%H%M%S')); // Previous PHP versions, deprecated as of PHP 8.1.
+					$date = date('-Y-m-d-His', time());       // Equivalent date replacement for the previous strftime function.
 					$cmd1 = ("/sbin/zfs snapshot {$zroot}/{$beds}/{$item}@{$item}{$date}");
 					$return_val = mwexec($cmd1);
 					if($return_val == 0):
@@ -206,6 +208,11 @@ if($_POST):
 					endif;
 
 					// Perform the boot environment@snapshot backup.
+					if ($_POST['gzbackup']):
+						$compress_method = $compress_method_gz;
+						$archive_ext_def = "gz";
+					endif;
+
 					$cmd2 = ("/sbin/zfs send {$zfs_sendparams} {$zroot}/{$beds}/{$item}@{$item}{$date} | {$compress_method} > {$backup_path}/{$item}{$date}.{$archive_ext_def}");
 					unset($output,$retval);mwexec2($cmd2,$output,$retval);
 					if($retval == 0):
@@ -255,6 +262,9 @@ function enable_change(enable_change) {
 function action_change() {
 	showElementById('newname_tr','hide');
 	showElementById('dateadd_tr','hide');
+	//showElementById('xzbackup_tr','hide');
+	showElementById('gzbackup_tr','hide');
+	//showElementById('rawbackup_tr','hide');
 	var action = document.iform.action.value;
 	switch (action) {
 		case "activate":
@@ -276,6 +286,9 @@ function action_change() {
 		case "backup":
 			showElementById('newname_tr','hide');
 			showElementById('dateadd_tr','hide');
+			//showElementById('xzbackup_tr','show');
+			showElementById('gzbackup_tr','show');
+			//showElementById('rawbackup_tr','show');
 			break;
 		case "delete":
 			showElementById('newname_tr','hide');
@@ -334,6 +347,9 @@ $document->render();
 			html_combobox2('action',gettext('Action'),$pconfig['action'],$a_action,'',true,false,'action_change()');
 			html_inputbox2('newname',gettext('Name'),$pconfig['newname'],'',true,30);
 			html_checkbox2('dateadd',gettext('Date'),!empty($pconfig['dateadd']) ? true : false,gettext('Append the date in the following format: BENAME-XXXX-XX-XX-XXXXXX.'),'',false);
+			//html_checkbox2('xzbackup',gettext('XZ'),!empty($pconfig['xzbackup']) ? true : false,gettext('Backup selected Boot Environment with XZ compression, has higher compression ratio but is slow to create.'),'',false);
+			html_checkbox2('gzbackup',gettext('GZIP'),!empty($pconfig['gzbackup']) ? true : false,gettext('Backup selected Boot Environment with GZIP compression, has lower compression ratio but is faster to create.'),'',false);
+			//html_checkbox2('rawbackup',gettext('RAW'),!empty($pconfig['rawbackup']) ? true : false,gettext('Backup selected Boot Environment without any compression, has the larger file size but is faster to create.'),'',false);
 ?>
 		</tbody>
 	</table>

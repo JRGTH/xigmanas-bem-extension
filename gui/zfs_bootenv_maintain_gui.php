@@ -74,7 +74,11 @@ if ($_POST) {
 
 	if (isset($_POST['restore']) && $_POST['restore']) {
 		$backup_file = ($_POST['backup_path']);
-		$bedate = (strftime('-%Y-%m-%d-%H%M%S'));
+		//$bedate = (strftime('-%Y-%m-%d-%H%M%S')); // Previous PHP versions, deprecated as of PHP 8.1.
+		$bedate = date('-Y-m-d-His', time());    // Equivalent date replacement for the previous strftime function.
+		if(preg_match("/(.*.gz$)/", $backup_file)):
+			$decompress_method = $decompress_method_gz;
+		endif;
 		$cmd = "{$decompress_method} {$backup_file} | /sbin/zfs receive {$zfs_recvparams} {$zroot}/{$beds}/{$restore_name}{$bedate}";
 		unset($output,$retval);mwexec2($cmd,$output,$retval);
 		if ($retval == 0) {
@@ -139,8 +143,7 @@ if ($_POST) {
 			}
 		if (!is_file($backup_path)) {
 			$cmd = "/usr/sbin/sysrc -f {$configfile} BACKUP_DIR={$backup_path}";
-			unset($retval);mwexec($cmd,$retval);
-			if ($retval == 0) {
+			if (exec($cmd)) {
 				$savemsg .= gtext("Extension settings saved successfully.");
 				exec("echo '{$date}: {$application} Extension settings saved successfully' >> {$logfile}");
 				}

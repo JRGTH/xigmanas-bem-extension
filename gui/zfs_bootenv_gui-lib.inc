@@ -64,14 +64,6 @@ if ($zfs_sendparams == "") {
 	$zfs_sendparams = $zfs_sendparams_def;
 }
 
-// Ensure the compression method is specified.
-$compress_method = exec("/usr/bin/grep 'DEFAULT_COMPRESS=' {$confdir}/conf/bem_config | cut -d'\"' -f2");
-if ($compress_method == "") {
-	$compress_method_def = "xz -0 -v";
-	exec("/usr/sbin/sysrc -f {$configfile} DEFAULT_COMPRESS='{$compress_method_def}'");
-	$compress_method = $compress_method_def;
-}
-
 // Ensure the zfs recv paramerers are specified.
 $zfs_recvparams = exec("/usr/bin/grep 'ZFS_RECVPARAM=' {$confdir}/conf/bem_config | cut -d'\"' -f2");
 if ($zfs_recvparams == "") {
@@ -80,12 +72,36 @@ if ($zfs_recvparams == "") {
 	$zfs_recvparams = $zfs_recvparams_def;
 }
 
-// Ensure the decompression method is specified.
+// Ensure the XZ compression method is specified.
+$compress_method = exec("/usr/bin/grep 'DEFAULT_COMPRESS=' {$confdir}/conf/bem_config | cut -d'\"' -f2");
+if ($compress_method == "") {
+	$compress_method_def = "xz -0 -v";
+	exec("/usr/sbin/sysrc -f {$configfile} DEFAULT_COMPRESS='{$compress_method_def}'");
+	$compress_method = $compress_method_def;
+}
+
+// Ensure the XZ decompression method is specified.
 $decompress_method = exec("/usr/bin/grep 'DEFAULT_DECOMPRESS=' {$confdir}/conf/bem_config | cut -d'\"' -f2");
 if ($decompress_method == "") {
 	$decompress_method_def = "xz -c -d -v";
 	exec("/usr/sbin/sysrc -f {$configfile} DEFAULT_DECOMPRESS='{$decompress_method_def}'");
 	$decompress_method = $decompress_method_def;
+}
+
+// Ensure the GZ compression method is specified.
+$compress_method_gz = exec("/usr/bin/grep 'DEFAULT_COMPRESS_GZ=' {$confdir}/conf/bem_config | cut -d'\"' -f2");
+if ($compress_method_gz == "") {
+	$compress_method_gz_def = "gzip -1 -v";
+	exec("/usr/sbin/sysrc -f {$configfile} DEFAULT_COMPRESS_GZ='{$compress_method_gz_def}'");
+	$compress_method_gz = $compress_method_gz_def;
+}
+
+// Ensure the GZ decompression method is specified.
+$decompress_method_gz = exec("/usr/bin/grep 'DEFAULT_DECOMPRESS_GZ=' {$confdir}/conf/bem_config | cut -d'\"' -f2");
+if ($decompress_method_gz == "") {
+	$decompress_method_gz_def = "-k -d -c -v";
+	exec("/usr/sbin/sysrc -f {$configfile} DEFAULT_DECOMPRESS_GZ='{$decompress_method_gz_def}'");
+	$decompress_method_gz = $decompress_method_gz_def;
 }
 
 ?>

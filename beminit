@@ -49,6 +49,8 @@ ZFS_SENDPARAMS=""
 ZFS_RECVPARAM=""
 DEFAULT_COMPRESS="xz -0 -v --threads=0"
 DEFAULT_DECOMPRESS="xz -c -d -v --threads=0"
+DEFAULT_COMPRESS_GZ="gzip -1 -v"
+DEFAULT_DECOMPRESS_GZ="gzip -k -d -c -v"
 EXTLOGFILE="${CWDIR}/log/bem_ext.log"
 FULLAPPNAME="BE Manager"
 LONGAPPNAME="Boot Environments Manager"
@@ -119,6 +121,12 @@ runtime_config()
 	fi
 	if ! grep -qw "DEFAULT_DECOMPRESS=" ${CWDIR}${BEMCONF} >/dev/null 2>&1; then
 		sysrc -f ${CWDIR}${BEMCONF} DEFAULT_DECOMPRESS="${DEFAULT_DECOMPRESS}" >/dev/null 2>&1
+	fi
+	if ! grep -qw "DEFAULT_COMPRESS_GZ=" ${CWDIR}${BEMCONF} >/dev/null 2>&1; then
+		sysrc -f ${CWDIR}${BEMCONF} DEFAULT_COMPRESS_GZ="${DEFAULT_COMPRESS_GZ}" >/dev/null 2>&1
+	fi
+	if ! grep -qw "DEFAULT_DECOMPRESS_GZ=" ${CWDIR}${BEMCONF} >/dev/null 2>&1; then
+		sysrc -f ${CWDIR}${BEMCONF} DEFAULT_DECOMPRESS_GZ="${DEFAULT_DECOMPRESS_GZ}" >/dev/null 2>&1
 	fi
 }
 
